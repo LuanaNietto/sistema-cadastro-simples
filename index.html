@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de clientes e endereços - Agrosys</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <div id="auth-container" class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+            <div class="row w-100">
+                <div class="col-md-4 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="authTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">
+                                        <i class="fas fa-sign-in-alt"></i> Login
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button" role="tab">
+                                        <i class="fas fa-user-plus"></i> Cadastro
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="authTabsContent">
+                                <div class="tab-pane fade show active" id="login" role="tabpanel">
+                                    <form id="loginForm">
+                                        <div class="mb-3">
+                                            <label for="loginEmail" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="loginEmail" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="loginPassword" class="form-label">Senha</label>
+                                            <input type="password" class="form-control" id="loginPassword" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-sign-in-alt"></i> Entrar
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <div class="tab-pane fade" id="register" role="tabpanel">
+                                    <form id="registerForm">
+                                        <div class="mb-3">
+                                            <label for="registerName" class="form-label">Nome</label>
+                                            <input type="text" class="form-control" id="registerName" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="registerEmail" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="registerEmail" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="registerPassword" class="form-label">Senha</label>
+                                            <input type="password" class="form-control" id="registerPassword" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="confirmPassword" class="form-label">Confirmar Senha</label>
+                                            <input type="password" class="form-control" id="confirmPassword" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="fas fa-user-plus"></i> Cadastrar
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sistema Principal -->
+        <div id="main-container" class="d-none">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <div class="container">
+                    <a class="navbar-brand" href="#">
+                        <i class="fas fa-users"></i> Sistema de Cadastro - Agrosys
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" onclick="showSection('clients')">
+                                    <i class="fas fa-users"></i> Clientes
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showSection('addresses')">
+                                    <i class="fas fa-map-marker-alt"></i> Endereços
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="showSection('settings')">
+                                    <i class="fas fa-cogs"></i> Configurações
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user"></i> <span id="userName"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="logout()">
+                                        <i class="fas fa-sign-out-alt"></i> Sair
+                                    </a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container mt-4">
+                <div id="clients-section" class="content-section">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-users"></i> Gerenciar Clientes</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#clientModal" onclick="openClientModal()">
+                            <i class="fas fa-plus"></i> Novo Cliente
+                        </button>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Nome</th>
+                                            <th>CPF</th>
+                                            <th>Data Nascimento</th>
+                                            <th>Telefone</th>
+                                            <th>Celular</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="clientsTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="addresses-section" class="content-section d-none">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2><i class="fas fa-map-marker-alt"></i> Gerenciar Endereços</h2>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressModal" data-bs-backdrop="false" onclick="openAddressModal()">
+                            <i class="fas fa-plus"></i> Novo Endereço
+                        </button>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <select class="form-select" id="clientFilter" onchange="filterAddresses()">
+                                <option value="">Todos os clientes</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Cliente</th>
+                                            <th>CEP</th>
+                                            <th>Endereço</th>
+                                            <th>Bairro</th>
+                                            <th>Cidade</th>
+                                            <th>Estado</th>
+                                            <th>Principal</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="addressesTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="settings-section" class="content-section d-none">
+                    <h2><i class="fas fa-cogs"></i> Configurações</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header" style="background-color: #228B22;">
+                                    <h5><i class="fas fa-download"></i> Exportar Dados</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Baixe todos os dados do sistema em formato JSON</p>
+                                    <button class="btn" style="background-color: #228B22;" onclick="exportData()">
+                                        <i class="fas fa-download"></i> Exportar Banco de Dados
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header" style="background-color: #DAA520;">
+                                    <h5><i class="fas fa-upload"></i> Importar Dados</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Importe dados de um arquivo JSON</p>
+                                    <input type="file" class="form-control mb-3" id="importFile" accept=".json">
+                                    <button class="btn" style="background-color: #DAA520;" onclick="importData()">
+                                        <i class="fas fa-upload"></i> Importar Banco de Dados
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header" style="background-color: #1E90FF;">
+                                    <h5><i class="fas fa-database"></i> Dados de Exemplo</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Carregue dados pré-populados para teste</p>
+                                    <button class="btn text-white" style="background-color: #1E90FF;" onclick="loadSampleData()">
+                                        <i class="fas fa-database"></i> Carregar Dados de Exemplo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card border-danger">
+                                <div class="card-header text-white" style="background-color: #B22222;">
+                                    <h5><i class="fas fa-trash"></i> Limpar Dados</h5>
+                                </div>
+                                <div class="card-body">
+                                    <p>Remove todos os dados do sistema</p>
+                                    <button class="btn text-white" style="background-color: #B22222;" onclick="clearAllData()">
+                                        <i class="fas fa-trash"></i> Limpar Todos os Dados
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="clientModal" tabindex="-1" data-bs-backdrop="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="clientModalTitle">Novo Cliente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="clientForm">
+                            <input type="hidden" id="clientId">
+                            <div class="mb-3">
+                                <label for="clientName" class="form-label">Nome *</label>
+                                <input type="text" class="form-control" id="clientName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="clientCpf" class="form-label">CPF *</label>
+                                <input type="text" class="form-control" id="clientCpf" required maxlength="14">
+                            </div>
+                            <div class="mb-3">
+                                <label for="clientBirthDate" class="form-label">Data de Nascimento *</label>
+                                <input type="date" class="form-control" id="clientBirthDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="clientPhone" class="form-label">Telefone</label>
+                                <input type="text" class="form-control" id="clientPhone" maxlength="14">
+                            </div>
+                            <div class="mb-3">
+                                <label for="clientMobile" class="form-label">Celular *</label>
+                                <input type="text" class="form-control" id="clientMobile" required maxlength="15">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-backdrop="false">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="saveClient()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addressModal" tabindex="-1" data-bs-backdrop="false">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addressModalTitle">Novo Endereço</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addressForm">
+                            <input type="hidden" id="addressId">
+                            <div class="mb-3">
+                                <label for="addressClient" class="form-label">Cliente *</label>
+                                <select class="form-select" id="addressClient" required>
+                                    <option value="">Selecione um cliente</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="addressCep" class="form-label">CEP *</label>
+                                        <input type="text" class="form-control" id="addressCep" required maxlength="9">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button type="button" class="btn btn-info w-100" onclick="searchCep()">
+                                            <i class="fas fa-search"></i> Buscar CEP
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <div class="mb-3">
+                                        <label for="addressStreet" class="form-label">Logradouro *</label>
+                                        <input type="text" class="form-control" id="addressStreet" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="addressNumber" class="form-label">Número *</label>
+                                        <input type="text" class="form-control" id="addressNumber" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addressComplement" class="form-label">Complemento</label>
+                                <input type="text" class="form-control" id="addressComplement">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="addressNeighborhood" class="form-label">Bairro *</label>
+                                        <input type="text" class="form-control" id="addressNeighborhood" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="addressCity" class="form-label">Cidade *</label>
+                                        <input type="text" class="form-control" id="addressCity" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mb-3">
+                                        <label for="addressState" class="form-label">Estado *</label>
+                                        <input type="text" class="form-control" id="addressState" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addressCountry" class="form-label">País *</label>
+                                <input type="text" class="form-control" id="addressCountry" value="Brasil" required>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="addressPrimary">
+                                    <label class="form-check-label" for="addressPrimary">
+                                        Endereço principal
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" onclick="saveAddress()">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="toast" class="toast" role="alert">
+                <div class="toast-header">
+                    <i id="toastIcon" class="fas fa-info-circle text-primary me-2"></i>
+                    <strong class="me-auto" id="toastTitle">Notificação</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body" id="toastBody">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alasql@0.5"></script>
+    <script src="app.js"></script>
+</body>
+</html>
